@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>سوق بلس | متجر إلكتروني آمن</title>
+    <title>WahRAN </title>
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -38,28 +38,24 @@
 
             const totalPrice = cart.reduce((sum, item) => sum + item.price, 0);
 
-            // --- الدالة المحدثة للتحويل إلى واتساب ---
             const handleOrder = (e) => {
                 e.preventDefault();
-
-                // 1. تنظيف البيانات (Security)
                 const cleanName = formData.name.replace(/[<>]/g, "");
                 const cleanPhone = formData.phone.replace(/[<>]/g, "");
                 const cleanAddress = formData.address.replace(/[<>]/g, "");
 
-                // 2. تجهيز نص الرسالة
                 const productList = cart.map(item => `- ${item.name} (${item.price} د.ج)`).join('\n');
-                const message = `*طلب جديد من المتجر* 🛒\n\n` +
+                
+                // إضافة اسمك في نص الرسالة ليعرف الزبون الجهة الرسمية
+                const message = `*طلب جديد من متجر WahRAN* 🛒\n` +
+                                `*المسؤول:* Mohamed Yacine Boucheteur\n\n` +
                                 `*الاسم:* ${cleanName}\n` +
                                 `*الهاتف:* ${cleanPhone}\n` +
                                 `*العنوان:* ${cleanAddress}\n\n` +
                                 `*المنتجات:*\n${productList}\n\n` +
                                 `*المجموع:* ${totalPrice.toLocaleString()} د.ج`;
 
-                // 3. الرقم الخاص بك
                 const myPhoneNumber = "213658900112"; 
-
-                // 4. فتح رابط واتساب
                 const whatsappUrl = `https://wa.me/${myPhoneNumber}?text=${encodeURIComponent(message)}`;
                 window.open(whatsappUrl, '_blank');
 
@@ -70,56 +66,61 @@
 
             return (
                 <div className="min-h-screen pb-10">
-                    <header className="bg-white shadow-sm sticky top-0 z-30 p-4 flex justify-between items-center">
-                        <h1 className="text-2xl font-bold text-blue-700">سوق بلس</h1>
-                        <button onClick={() => setIsCartOpen(true)} className="relative p-2 bg-slate-100 rounded-full">
-                            🛒 <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">{cart.length}</span>
+                    <header className="bg-white shadow-sm sticky top-0 z-30 p-4 flex justify-between items-center border-b border-slate-100">
+                        <h1 className="text-3xl font-black text-blue-800 tracking-tighter">WahRAN</h1>
+                        <button onClick={() => setIsCartOpen(true)} className="relative p-2 bg-slate-100 rounded-full hover:bg-slate-200 transition">
+                            🛒 <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">{cart.length}</span>
                         </button>
                     </header>
 
-                    <section className="bg-blue-600 text-white py-12 px-4 text-center">
-                        <h2 className="text-3xl font-bold">تسوق بضمان وأمان</h2>
-                        <p className="mt-2 opacity-90 text-sm">اطلب الآن والدفع عند الاستلام</p>
+                    <section className="bg-gradient-to-br from-blue-800 to-blue-600 text-white py-20 px-4 text-center shadow-inner">
+                        <h2 className="text-5xl font-extrabold mb-4">WahRAN Store</h2>
+                        <p className="text-blue-100 text-lg opacity-90 font-medium">الجودة والأناقة في مكان واحد</p>
                     </section>
 
-                    <main className="max-w-6xl mx-auto p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <main className="max-w-6xl mx-auto p-6 grid grid-cols-1 md:grid-cols-3 gap-8">
                         {products.map(p => (
-                            <div key={p.id} className="bg-white rounded-xl overflow-hidden shadow-sm border border-slate-200">
-                                <img src={p.image} className="w-full h-48 object-cover" />
-                                <div className="p-4">
-                                    <h3 className="text-lg font-bold">{p.name}</h3>
-                                    <div className="flex justify-between items-center mt-4">
-                                        <span className="text-xl font-bold text-blue-600">{p.price.toLocaleString()} د.ج</span>
-                                        <button onClick={() => addToCart(p)} className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">إضافة</button>
+                            <div key={p.id} className="bg-white rounded-3xl overflow-hidden shadow-sm border border-slate-200 hover:shadow-2xl transition-all duration-300">
+                                <img src={p.image} className="w-full h-56 object-cover" />
+                                <div className="p-6">
+                                    <h3 className="text-xl font-bold text-slate-800">{p.name}</h3>
+                                    <div className="flex justify-between items-center mt-6">
+                                        <span className="text-2xl font-black text-blue-700">{p.price.toLocaleString()} د.ج</span>
+                                        <button onClick={() => addToCart(p)} className="bg-blue-700 text-white px-6 py-2 rounded-2xl hover:bg-blue-800 font-bold shadow-lg shadow-blue-200 transition">إضافة</button>
                                     </div>
                                 </div>
                             </div>
                         ))}
                     </main>
 
-                    {/* Cart Sidebar */}
                     {isCartOpen && (
                         <div className="fixed inset-0 z-50 flex justify-end">
-                            <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setIsCartOpen(false)}></div>
-                            <div className="relative w-full max-w-md bg-white h-full shadow-2xl p-6 flex flex-col overflow-y-auto">
-                                <h2 className="text-2xl font-bold mb-4 border-b pb-2">سلتك</h2>
-                                {cart.length === 0 ? <p className="text-gray-400">السلة فارغة</p> : (
+                            <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setIsCartOpen(false)}></div>
+                            <div className="relative w-full max-w-md bg-white h-full shadow-2xl p-8 flex flex-col overflow-y-auto">
+                                <div className="flex justify-between items-center mb-8 border-b pb-4">
+                                    <h2 className="text-2xl font-black text-slate-800">سلة التسوق</h2>
+                                    <button onClick={() => setIsCartOpen(false)} className="text-slate-400 hover:text-slate-600 text-xl">✕</button>
+                                </div>
+                                
+                                {cart.length === 0 ? <p className="text-slate-400 text-center py-20 italic font-medium text-lg">سلة WahRAN فارغة..</p> : (
                                     <>
                                         <div className="flex-1 space-y-4">
                                             {cart.map(item => (
-                                                <div key={item.cartId} className="flex justify-between bg-slate-50 p-2 rounded">
-                                                    <span>{item.name}</span>
-                                                    <button onClick={() => removeFromCart(item.cartId)} className="text-red-500 text-xs italic underline">حذف</button>
+                                                <div key={item.cartId} className="flex justify-between items-center bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                                                    <span className="font-bold text-slate-700">{item.name}</span>
+                                                    <button onClick={() => removeFromCart(item.cartId)} className="text-red-500 text-sm font-bold hover:underline">حذف</button>
                                                 </div>
                                             ))}
                                         </div>
-                                        <div className="mt-6 border-t pt-4">
-                                            <p className="text-xl font-bold mb-4 text-left italic">المجموع: {totalPrice.toLocaleString()} د.ج</p>
-                                            <form onSubmit={handleOrder} className="space-y-3">
-                                                <input required type="text" placeholder="الاسم" className="w-full p-2 border rounded" onChange={e => setFormData({...formData, name: e.target.value})} />
-                                                <input required type="tel" placeholder="الهاتف" className="w-full p-2 border rounded" onChange={e => setFormData({...formData, phone: e.target.value})} />
-                                                <textarea required placeholder="العنوان" className="w-full p-2 border rounded" onChange={e => setFormData({...formData, address: e.target.value})}></textarea>
-                                                <button type="submit" className="w-full bg-green-600 text-white py-3 rounded-lg font-bold hover:bg-green-700 shadow-lg">إتمام الطلب عبر WhatsApp</button>
+                                        <div className="mt-8 border-t pt-8">
+                                            <p className="text-3xl font-black mb-8 text-blue-800">المجموع: {totalPrice.toLocaleString()} د.ج</p>
+                                            <form onSubmit={handleOrder} className="space-y-4">
+                                                <input required type="text" placeholder="الاسم الكامل" className="w-full p-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none" onChange={e => setFormData({...formData, name: e.target.value})} />
+                                                <input required type="tel" placeholder="رقم الهاتف" className="w-full p-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none" onChange={e => setFormData({...formData, phone: e.target.value})} />
+                                                <textarea required placeholder="العنوان" className="w-full p-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none h-24" onChange={e => setFormData({...formData, address: e.target.value})}></textarea>
+                                                <button type="submit" className="w-full bg-green-600 text-white py-5 rounded-3xl font-black text-xl hover:bg-green-700 shadow-xl transition-all">
+                                                    إرسال الطلب عبر WhatsApp
+                                                </button>
                                             </form>
                                         </div>
                                     </>
@@ -128,16 +129,13 @@
                         </div>
                     )}
 
-                    {orderComplete && (
-                        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
-                            <div className="absolute inset-0 bg-black/70" onClick={() => setOrderComplete(false)}></div>
-                            <div className="relative bg-white p-8 rounded-2xl text-center">
-                                <h2 className="text-xl font-bold">تم تحويلك للواتساب! ✅</h2>
-                                <p className="text-gray-500 mt-2">يرجى الضغط على "إرسال" في التطبيق.</p>
-                                <button onClick={() => setOrderComplete(false)} className="mt-4 bg-blue-600 text-white px-6 py-2 rounded-lg">إغلاق</button>
-                            </div>
+                    <footer className="mt-20 py-12 bg-slate-900 text-slate-400 text-center border-t border-slate-800">
+                        <p className="text-lg font-bold text-slate-200">WahRAN Store</p>
+                        <p className="mt-2 opacity-70">© 2026 جميع الحقوق محفوظة</p>
+                        <div className="mt-4 inline-block px-4 py-2 bg-slate-800 rounded-full text-xs font-mono tracking-widest text-blue-400 uppercase">
+                            Developed by: Mohamed Yacine Boucheteur
                         </div>
-                    )}
+                    </footer>
                 </div>
             );
         }
@@ -147,3 +145,4 @@
     </script>
 </body>
 </html>
+  
