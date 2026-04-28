@@ -3,167 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <title>WahRAN </title>
-    
+    <title>WahRAN | Mohamed Yacine Boucheteur</title>
     <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/3081/3081840.png">
-
-    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap');
+        body { font-family: 'Cairo', sans-serif; }
+    </style>
 </head>
-<body class="bg-slate-50 text-slate-900 font-sans">
+<body class="bg-slate-50 text-slate-900">
     <div id="root"></div>
 
     <script type="text/babel">
         const { useState } = React;
 
-        function StoreApp() {
+        function WahranStore() {
             const [cart, setCart] = useState([]);
             const [isCartOpen, setIsCartOpen] = useState(false);
-            const [orderComplete, setOrderComplete] = useState(false);
-            const [formData, setFormData] = useState({ name: '', phone: '', address: '' });
+            const [orderSent, setOrderSent] = useState(false);
+            const [user, setUser] = useState({ name: '', phone: '', address: '' });
 
             const products = [
-                { id: 1, name: 'ساعة ذكية برو', price: 15000, image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400' },
-                { id: 2, name: 'سماعات لاسلكية', price: 22000, image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400' },
-                { id: 3, name: 'حقيبة سفر جلدية', price: 12000, image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400' }
+                { id: 1, name: 'ساعة ذكية برو', price: 15000, img: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500' },
+                { id: 2, name: 'سماعات لاسلكية', price: 22000, img: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500' },
+                { id: 3, name: 'حقيبة سفر فاخرة', price: 12000, img: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500' }
             ];
 
-            const addToCart = (product) => {
-                setCart([...cart, { ...product, cartId: Date.now() }]);
+            const addToCart = (p) => {
+                setCart([...cart, { ...p, itemId: Date.now() }]);
                 setIsCartOpen(true);
             };
 
-            const removeFromCart = (cartId) => {
-                setCart(cart.filter(item => item.cartId !== cartId));
-            };
-
-            const totalPrice = cart.reduce((sum, item) => sum + item.price, 0);
-
-            const handleOrder = (e) => {
+            const sendToWhatsapp = (e) => {
                 e.preventDefault();
-                const cleanName = formData.name.replace(/[<>]/g, "");
-                const cleanPhone = formData.phone.replace(/[<>]/g, "");
-                const cleanAddress = formData.address.replace(/[<>]/g, "");
-
-                // تنسيق قائمة المنتجات بشكل رائع
-                const productList = cart.map(item => `✨ *${item.name}*`).join('\n');
+                const productList = cart.map(i => `• *${i.name}*`).join('\n');
+                const total = cart.reduce((a, b) => a + b.price, 0);
                 
-                // صياغة الرسالة "الجميلة"
-                const message = 
-                    `السلام عليكم متجر *WahRAN* 🛒\n\n` +
-                    `أود تقديم طلب شراء جديد بالتفاصيل التالية:\n` +
-                    `--------------------------\n` +
-                    `👤 *الاسم الكامل:* ${cleanName}\n` +
-                    `📞 *رقم الهاتف:* ${cleanPhone}\n` +
-                    `📍 *العنوان:* ${cleanAddress}\n` +
-                    `--------------------------\n` +
-                    `📦 *المنتجات المطلوبة:*\n${productList}\n\n` +
-                    `💰 *الإجمالي الصافي:* ${totalPrice.toLocaleString()} د.ج\n` +
-                    `--------------------------\n` +
-                    `شكراً لكم، أنتظر تأكيد الطلب من طرفكم 🙏`;
+                const msg = `السلام عليكم متجر *WahRAN* 🛒\n\n` +
+                            `طلب جديد من: *${user.name}*\n` +
+                            `الهاتف: ${user.phone}\n` +
+                            `العنوان: ${user.address}\n\n` +
+                            `*المنتجات:*\n${productList}\n\n` +
+                            `*المجموع الإجمالي:* ${total.toLocaleString()} د.ج\n\n` +
+                            `شكراً لكم، في انتظار تأكيد الطلب.`;
 
-                const myPhoneNumber = "213658900112"; 
-                const whatsappUrl = `https://wa.me/${myPhoneNumber}?text=${encodeURIComponent(message)}`;
-                
-                // فتح واتساب
-                window.open(whatsappUrl, '_blank');
-
-                setOrderComplete(true);
-                setCart([]);
-                setIsCartOpen(false);
-            };
-
-                const myPhoneNumber = "213658900112"; 
-                const whatsappUrl = `https://wa.me/${myPhoneNumber}?text=${encodeURIComponent(message)}`;
-                window.open(whatsappUrl, '_blank');
-
-                setOrderComplete(true);
+                window.open(`https://wa.me/213658900112?text=${encodeURIComponent(msg)}`, '_blank');
+                setOrderSent(true);
                 setCart([]);
                 setIsCartOpen(false);
             };
 
             return (
-                <div className="min-h-screen pb-10">
-                    <header className="bg-white shadow-sm sticky top-0 z-30 p-4 flex justify-between items-center border-b border-slate-100">
-                        <h1 className="text-3xl font-black text-blue-800 tracking-tighter">WahRAN</h1>
-                        <button onClick={() => setIsCartOpen(true)} className="relative p-2 bg-slate-100 rounded-full hover:bg-slate-200 transition">
-                            🛒 <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">{cart.length}</span>
+                <div className="min-h-screen">
+                    {/* Header */}
+                    <header className="bg-white shadow-md p-4 sticky top-0 z-40 flex justify-between items-center">
+                        <h1 className="text-3xl font-black text-blue-700 tracking-tighter">WahRAN</h1>
+                        <button onClick={() => setIsCartOpen(true)} className="bg-slate-100 p-3 rounded-full relative">
+                            🛒 {cart.length > 0 && <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">{cart.length}</span>}
                         </button>
                     </header>
 
-                    <section className="bg-gradient-to-br from-blue-800 to-blue-600 text-white py-20 px-4 text-center shadow-inner">
-                        <h2 className="text-5xl font-extrabold mb-4">WahRAN Store</h2>
-                        <p className="text-blue-100 text-lg opacity-90 font-medium">الجودة والأناقة في مكان واحد</p>
+                    {/* Hero */}
+                    <section className="bg-blue-600 text-white py-16 px-4 text-center">
+                        <h2 className="text-4xl font-extrabold mb-2 text-white">متجر WahRAN الرسمي</h2>
+                        <p className="opacity-90">تسوق بكل ثقة مع محمد ياسين </p>
                     </section>
 
+                    {/* Products */}
                     <main className="max-w-6xl mx-auto p-6 grid grid-cols-1 md:grid-cols-3 gap-8">
                         {products.map(p => (
-                            <div key={p.id} className="bg-white rounded-3xl overflow-hidden shadow-sm border border-slate-200 hover:shadow-2xl transition-all duration-300">
-                                <img src={p.image} className="w-full h-56 object-cover" />
+                            <div key={p.id} className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden hover:shadow-xl transition">
+                                <img src={p.img} className="w-full h-56 object-cover" />
                                 <div className="p-6">
-                                    <h3 className="text-xl font-bold text-slate-800">{p.name}</h3>
-                                    <div className="flex justify-between items-center mt-6">
-                                        <span className="text-2xl font-black text-blue-700">{p.price.toLocaleString()} د.ج</span>
-                                        <button onClick={() => addToCart(p)} className="bg-blue-700 text-white px-6 py-2 rounded-2xl hover:bg-blue-800 font-bold shadow-lg shadow-blue-200 transition">إضافة</button>
+                                    <h3 className="text-xl font-bold mb-4">{p.name}</h3>
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-2xl font-black text-blue-600">{p.price.toLocaleString()} د.ج</span>
+                                        <button onClick={() => addToCart(p)} className="bg-blue-600 text-white px-6 py-2 rounded-xl font-bold">إضافة</button>
                                     </div>
                                 </div>
                             </div>
                         ))}
                     </main>
 
+                    {/* Cart Sidebar */}
                     {isCartOpen && (
                         <div className="fixed inset-0 z-50 flex justify-end">
                             <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setIsCartOpen(false)}></div>
-                            <div className="relative w-full max-w-md bg-white h-full shadow-2xl p-8 flex flex-col overflow-y-auto">
-                                <div className="flex justify-between items-center mb-8 border-b pb-4">
-                                    <h2 className="text-2xl font-black text-slate-800">سلة التسوق</h2>
-                                    <button onClick={() => setIsCartOpen(false)} className="text-slate-400 hover:text-slate-600 text-xl">✕</button>
-                                </div>
-                                
-                                {cart.length === 0 ? <p className="text-slate-400 text-center py-20 italic font-medium text-lg">سلة WahRAN فارغة..</p> : (
-                                    <>
-                                        <div className="flex-1 space-y-4">
+                            <div className="relative w-full max-w-md bg-white h-full p-8 overflow-y-auto">
+                                <h2 className="text-2xl font-black mb-6 border-b pb-4 text-blue-800">سلة WahRAN</h2>
+                                {cart.length === 0 ? <p className="text-center py-20 text-slate-400">السلة فارغة حالياً</p> : (
+                                    <form onSubmit={sendToWhatsapp} className="space-y-4">
+                                        <div className="space-y-2 mb-6">
                                             {cart.map(item => (
-                                                <div key={item.cartId} className="flex justify-between items-center bg-slate-50 p-4 rounded-2xl border border-slate-100">
-                                                    <span className="font-bold text-slate-700">{item.name}</span>
-                                                    <button onClick={() => removeFromCart(item.cartId)} className="text-red-500 text-sm font-bold hover:underline">حذف</button>
+                                                <div key={item.itemId} className="flex justify-between p-3 bg-slate-50 rounded-xl">
+                                                    <span>{item.name}</span>
+                                                    <span className="font-bold">{item.price.toLocaleString()} د.ج</span>
                                                 </div>
                                             ))}
                                         </div>
-                                        <div className="mt-8 border-t pt-8">
-                                            <p className="text-3xl font-black mb-8 text-blue-800">المجموع: {totalPrice.toLocaleString()} د.ج</p>
-                                            <form onSubmit={handleOrder} className="space-y-4">
-                                                <input required type="text" placeholder="الاسم الكامل" className="w-full p-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none" onChange={e => setFormData({...formData, name: e.target.value})} />
-                                                <input required type="tel" placeholder="رقم الهاتف" className="w-full p-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none" onChange={e => setFormData({...formData, phone: e.target.value})} />
-                                                <textarea required placeholder="العنوان" className="w-full p-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none h-24" onChange={e => setFormData({...formData, address: e.target.value})}></textarea>
-                                                <button type="submit" className="w-full bg-green-600 text-white py-5 rounded-3xl font-black text-xl hover:bg-green-700 shadow-xl transition-all">
-                                                    إرسال الطلب عبر WhatsApp
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </>
+                                        <div className="text-2xl font-black text-blue-700 py-4">الإجمالي: {cart.reduce((a,b)=>a+b.price, 0).toLocaleString()} د.ج</div>
+                                        <input required placeholder="الاسم الكامل" className="w-full p-4 bg-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500" onChange={e=>setUser({...user, name: e.target.value})} />
+                                        <input required type="tel" placeholder="رقم الهاتف" className="w-full p-4 bg-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500" onChange={e=>setUser({...user, phone: e.target.value})} />
+                                        <textarea required placeholder="العنوان بالتفصيل" className="w-full p-4 bg-slate-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 h-24" onChange={e=>setUser({...user, address: e.target.value})}></textarea>
+                                        <button className="w-full bg-green-600 text-white py-4 rounded-2xl font-black text-xl shadow-lg shadow-green-200">تأكيد الطلب (WhatsApp)</button>
+                                    </form>
                                 )}
                             </div>
                         </div>
                     )}
 
-                    <footer className="mt-20 py-12 bg-slate-900 text-slate-400 text-center border-t border-slate-800">
-                        <p className="text-lg font-bold text-slate-200">WahRAN Store</p>
-                        <p className="mt-2 opacity-70">© 2026 جميع الحقوق محفوظة</p>
-                        <div className="mt-4 inline-block px-4 py-2 bg-slate-800 rounded-full text-xs font-mono tracking-widest text-blue-400 uppercase">
-                            Developed by: Mohamed Yacine Boucheteur
-                        </div>
+                    {/* Footer */}
+                    <footer className="mt-20 py-10 bg-slate-900 text-slate-400 text-center">
+                        <p className="text-lg font-bold text-white mb-2">WahRAN Store</p>
+                        <p>© 2026 جميع الحقوق محفوظة</p>
+                        <p className="mt-4 text-xs font-mono tracking-widest text-blue-500">DEVELOPED BY: MOHAMED YACINE BOUCHETEUR</p>
                     </footer>
                 </div>
             );
         }
 
         const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<StoreApp />);
+        root.render(<WahranStore />);
     </script>
 </body>
 </html>
-  
