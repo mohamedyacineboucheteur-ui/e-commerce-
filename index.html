@@ -48,16 +48,33 @@
                 const cleanPhone = formData.phone.replace(/[<>]/g, "");
                 const cleanAddress = formData.address.replace(/[<>]/g, "");
 
-                const productList = cart.map(item => `- ${item.name} (${item.price} د.ج)`).join('\n');
+                // تنسيق قائمة المنتجات بشكل رائع
+                const productList = cart.map(item => `✨ *${item.name}*`).join('\n');
                 
-                // إضافة اسمك في نص الرسالة ليعرف الزبون الجهة الرسمية
-                const message = `*طلب جديد من متجر WahRAN* 🛒\n` +
-                                `*المسؤول:* Mohamed Yacine Boucheteur\n\n` +
-                                `*الاسم:* ${cleanName}\n` +
-                                `*الهاتف:* ${cleanPhone}\n` +
-                                `*العنوان:* ${cleanAddress}\n\n` +
-                                `*المنتجات:*\n${productList}\n\n` +
-                                `*المجموع:* ${totalPrice.toLocaleString()} د.ج`;
+                // صياغة الرسالة "الجميلة"
+                const message = 
+                    `السلام عليكم متجر *WahRAN* 🛒\n\n` +
+                    `أود تقديم طلب شراء جديد بالتفاصيل التالية:\n` +
+                    `--------------------------\n` +
+                    `👤 *الاسم الكامل:* ${cleanName}\n` +
+                    `📞 *رقم الهاتف:* ${cleanPhone}\n` +
+                    `📍 *العنوان:* ${cleanAddress}\n` +
+                    `--------------------------\n` +
+                    `📦 *المنتجات المطلوبة:*\n${productList}\n\n` +
+                    `💰 *الإجمالي الصافي:* ${totalPrice.toLocaleString()} د.ج\n` +
+                    `--------------------------\n` +
+                    `شكراً لكم، أنتظر تأكيد الطلب من طرفكم 🙏`;
+
+                const myPhoneNumber = "213658900112"; 
+                const whatsappUrl = `https://wa.me/${myPhoneNumber}?text=${encodeURIComponent(message)}`;
+                
+                // فتح واتساب
+                window.open(whatsappUrl, '_blank');
+
+                setOrderComplete(true);
+                setCart([]);
+                setIsCartOpen(false);
+            };
 
                 const myPhoneNumber = "213658900112"; 
                 const whatsappUrl = `https://wa.me/${myPhoneNumber}?text=${encodeURIComponent(message)}`;
